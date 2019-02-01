@@ -15,7 +15,7 @@ class Images:
         self.piece_image_path = piece_image_path
         self.main_image_path = main_photo_path
 
-        # image_size = (縦, 横)
+        # image_size = (height, width)
         self.image_size = (643, 643)
         self.alpha_piece_image = alpha_piece_image
         self.alpha_main_image = alpha_main_image
@@ -37,23 +37,22 @@ class Images:
 
 
     def main_image_getter(self):
-        # response = requests.get(self.main_image_path)
-        # main_image = Image.open(BytesIO(response.content))
-        main_image = Image.open(self.main_image_path)
-        self.image_size = main_image.size
+        response = requests.get(self.main_image_path)
+        main_image = Image.open(BytesIO(response.content))
+        # main_image = Image.open(self.main_image_path)
+        # self.image_size = main_image.size
         return main_image
 
     def piece_image_getter(self):
         image_size = self.image_size
-        images_list = glob.glob('./images/pieces/*')
+        images_list = self.piece_image_path
         random.shuffle(images_list)
 
         new_im = Image.new('RGB', (image_size[0]*7, image_size[1]*7))
         for i, elem in enumerate(images_list[:49]):
             print(i, elem)
-            # response = requests.get(elem)
-            # im = Image.open(BytesIO(response.content))
-            im = Image.open(elem)
+            response = requests.get(elem)
+            im = Image.open(BytesIO(response.content))
             
             image = im.resize(image_size)
             new_im.paste(image, (image_size[0]*(i%7), image_size[1]*(i//7)))
